@@ -22,4 +22,10 @@ sleep(1)
 traco(f'\033[1mAnalisando\033[m \033[1;35m< {downloadpath} >\033[m')
 sleep(1)
 
-mostrarArquivos(pathstr)  #  Função mostrar arquivos
+pastas = mostrarArquivos(pathstr)  #  Função mostrar arquivos
+#  mostrarArquivos() retorna uma lista com os sufixos encontrados dos arquivos analisados
+criarPastas(pastas)  # Função criarPastas recebe a lista 
+
+moverArquivos(pathstr, pastas)
+
+removerVazios(pathstr)
