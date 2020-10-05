@@ -1,3 +1,6 @@
+from colorama import Fore, Style, Back
+
+
 def traco(msg):
     """
     -> Print personalizado com traços de acordo com o tamanho do parâmetro msg
@@ -5,10 +8,9 @@ def traco(msg):
     :return: Sem retorno
     """
 
-    tam = len(msg) + 4
-    print('\033[1;34m-\033[m' * tam)  # print('-')
-    print(f' {msg:^} ')
-    print('\033[1;34m-\033[m' * tam)  # print('-')
+    print(f'{Fore.GREEN}-{Style.RESET_ALL}' * 45)  # print('-')
+    print(f' {msg:^45} ')
+    print(f'{Fore.GREEN}-{Style.RESET_ALL}' * 45)  # print('-')
 
 # ===================================== Feito com base no Gist de @robsonpiere ==============================#
 # ================== https://gist.github.com/robsonpiere/fc256f6e7b7301d2d12343372cde93f9 ===================#
@@ -24,18 +26,22 @@ def mostrarArquivos(caminho):
     """
 
     from pathlib import Path
+    from time import sleep
     # Caso queira ver o que está intrínseco na função, adicione os comandos comentados (coloque cores).
     caminho = Path(caminho)  # Caminho como objeto
     subpastas = []  # Lista subpastas vazia
     global sffx  # Variável global de modulos.py
 
-    print(f' Analisando < {caminho} > ') 
+    sleep(1.5)
+    traco(f'{Fore.BLACK}{Back.LIGHTCYAN_EX}-----> Analisando < {caminho} >{Style.RESET_ALL}') 
     for item in caminho.iterdir():  # Para cada item no caminho iterável
         if item.is_dir():  # Se o item for uma pasta
             subpastas.append(item)  # Adiciona na lista de subpastas
             continue  
             # Volta pro começo da iteração, ignorando o resto do processo
-        print(f'{item.name}')  # Se não for pasta, é arquivo, então mostra o nome
+        print(f'{Fore.YELLOW}-> {Fore.CYAN}{item.name}{Style.RESET_ALL}')  
+        # Se não for pasta, é arquivo, então mostra o nome
+        # print('-> {item.name}')
         if item.suffix not in sffx:
             sffx.append(item.suffix)
         # print(subpastas)
@@ -47,11 +53,12 @@ def mostrarArquivos(caminho):
     return sffx
 # ===================================== Obrigado @robsonpiere! ===========================================#
 
-        # Por algum motivo, o Python guarda a primeira ocorrência da lista subpastas, fazendo com que várias variáveis subpastas 
-        # temporárias existam. Eu não entendi a lógica dessa função, pensei em algo parecido, mas não nessa linha de pensamento
-        # Buscarei explicações para o que acontece aqui.
+    # Por algum motivo, o Python guarda a primeira ocorrência da lista subpastas, fazendo com que várias variáveis subpastas 
+    # temporárias existam. Eu não entendi a lógica dessa função, pensei em algo parecido, mas não nessa linha de pensamento
+    # Buscarei explicações para o que acontece aqui.
 
-    #  Não é possível usar o enumerate porque ele vai contar os diretórios e não printá-los, fazendo com que o índice fique com buracos
+    #  Não é possível usar o enumerate porque ele vai contar os diretórios e não printá-los, 
+    # fazendo com que o índice fique com buracos
     #  As vezes o intellisense buga no Pycharm e aqui
     #  Variável .name
     
@@ -65,17 +72,19 @@ def criarPastas(lst):
     """
 
     from os import makedirs
+    from time import sleep
 
     for suffix in lst:  # Para cada sufixo em lst (lst é uma lista que foi retornada para main.py)
         try:  # Tenta isso aqui
             makedirs(suffix)
         except FileExistsError:
-            print(f'Pasta {suffix} já foi criada!')
+            print(f'{Fore.LIGHTBLUE_EX}Pasta {Fore.MAGENTA}{suffix}{Fore.LIGHTBLUE_EX} já foi criada!{Style.RESET_ALL}')
             #  Mesmo se essa pasta existir manualmente, ela será detectada
         else:
-            print(f'Criando pasta para arquivos {suffix}')
+            print(f'{Fore.YELLOW}Criando pasta para arquivos {Fore.MAGENTA}{suffix}{Style.RESET_ALL}')
+    print('')
     print('Feito!')
-
+    sleep(1.5)
 
 log = []  # Lista que serve como um arquivo log, que guarda todas as alterações feitas
 
@@ -113,22 +122,26 @@ def moverArquivos(pathstr, lst):
                 log.append(caminhoantigo)  # Append no log do programa para uso de backup
                 log.append(caminhonovo)  # Append no log do programa para uso de backup
                 move(caminhoantigo, caminhonovo)  # Função move() da biblioteca Shutil
-                print(f'Movendo < {item.name} > para < {pasta} > ')
+                print(f'{Fore.LIGHTCYAN_EX}Movendo ' 
+                f'{Fore.LIGHTWHITE_EX}{item.name} ' 
+                f'{Fore.GREEN}para ' 
+                f'{Fore.LIGHTWHITE_EX}{pasta}{Style.RESET_ALL}')
+                # print('Movendo {item.name} para {pasta}')
+    print('')
 
     for subpasta in subpastas:  # Para cada subpasta in subpastas
         while True:
             try:  # Tente pra mim
-                opcao = str(input(f'Deseja mover os itens de {subpasta}? [S/N]: ')).strip().upper()
+                opcao = str(input(f'{Fore.LIGHTWHITE_EX}Deseja mover os itens de {subpasta}? [S/N]: {Style.RESET_ALL}')).strip().upper()
             except:  # Se der erro (TypeError, KeyboardError, etc)
-                print('Opção inválida! Por favor, tente novamente!')
+                print(f'{Fore.RED}Opção inválida! Por favor, tente novamente!{Style.RESET_ALL}')
             else:  # Se não der esses erros, vamos analisar outros
                 if opcao[0] not in 'SsNn':   # Se opção não estiver em 'SsNn'
-                    print('ERRO! Por favor, digite uma opção válida')  
+                    print(f'{Fore.LIGHTRED_EX}ERRO! Por favor, digite uma opção válida{Style.RESET_ALL}')  
                 else:  # Se estiver 
                     break 
-
         if opcao[0] in 'S':  # Se a opção for SIM
-            print(f'Acessando pasta < {subpasta} >')
+            traco(f'{Back.BLUE}Acessando pasta < {subpasta} >{Style.RESET_ALL}')
             moverArquivos(subpasta, sffx)  #  De novo aquela lógica maluca lá
         elif opcao[0] in 'N':  # Se a opção for NÃO
             continue  # Ignora a subpasta
@@ -149,7 +162,7 @@ def desfazer():
     global log  #  Variável global log
     indicenovo = (len(log) - 1)  # O índice novo está no len(log) - 1
     indiceantigo = (len(log) - 2)  # O índice antigo está no len(log) - 2
-    print('Desfazendo alterações...')
+    print(f'{Fore.LIGHTCYAN_EX}Desfazendo alterações...{Style.RESET_ALL}')
     while indiceantigo >= 0:  # Enquanto indiceantigo não chegar no índice 0
         indicenovo -= 2  # Subtrai 2
         indiceantigo -= 2  # Subtrai dois
@@ -180,4 +193,4 @@ def removerVazios(pathstr):
             else:  # Se não der erros
                 n += 1  # Conta a pasta apagada
                 
-    print(f'Removi {n} pasta(s) vazia(s)!')
+    print(f'Removi {Fore.LIGHTRED_EX}{n}{Style.RESET_ALL} pasta(s) vazia(s)!')
