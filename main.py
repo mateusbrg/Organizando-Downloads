@@ -28,4 +28,42 @@ criarPastas(pastas)  # Função criarPastas recebe a lista
 
 moverArquivos(pathstr, pastas)
 
-removerVazios(pathstr)
+print('ATENÇÃO!')
+print('A pasta Downloads será aberta')
+sleep(1)
+print('Veja se gostou das alterações')
+sleep(1)
+print('Se quiser desfazer as alterações, volte aqui no programa e confirme a respectiva opção')
+print('NÃO FECHE O PROGRAMA!')
+for c in range(5, 0, -1):
+    sleep(1)
+    print(f'Abrindo pasta Downloads em {c}')
+    
+os.startfile(pathstr)
+
+print('''
+        Quer manter as alterações?
+        Digite 'S' para manter as alterações
+        Digite 'N' para desfazer alterações
+        
+        As pastas vazias são temporárias e serão apagadas
+        ''')
+
+while True:
+    try:
+        opcao = str(input('Sua opção: ')).strip().upper()
+    except:
+        print('ERRO! Opção Inválida!')
+    else:
+        if opcao not in 'SN':
+            print('ERRO! Digite "S" para sim e "N" para não')
+        else:
+            break
+if opcao in 'N':
+    desfazer()
+    removerVazios(pathstr)
+else:
+    removerVazios(pathstr)
+
+print('Muito obrigado por usar o programa!')
+print('Feito com muito <3 por @mateusbrg')

@@ -1,6 +1,3 @@
-import pathlib
-
-
 def traco(msg):
     """
     -> Print personalizado com traços de acordo com o tamanho do parâmetro msg
@@ -9,15 +6,13 @@ def traco(msg):
     """
 
     tam = len(msg) + 4
-    print('\033[1;34m' + '-' * tam, end='')  # print('-')
-    print('\033[m')
-    print(f'  {msg:^}  ')
-    print('\033[1;34m' + '-' * tam, end='')  # print('-')
-    print('\033[m')
+    print('\033[1;34m-\033[m' * tam)  # print('-')
+    print(f' {msg:^} ')
+    print('\033[1;34m-\033[m' * tam)  # print('-')
 
 # ===================================== Feito com base no Gist de @robsonpiere ==============================#
 # ================== https://gist.github.com/robsonpiere/fc256f6e7b7301d2d12343372cde93f9 ===================#
-sffx = []
+sffx = []  # Lista que será usada para guardar as pastas criadas pela função abaixo
 
 
 def mostrarArquivos(caminho):
@@ -40,7 +35,7 @@ def mostrarArquivos(caminho):
             subpastas.append(item)  # Adiciona na lista de subpastas
             continue  
             # Volta pro começo da iteração, ignorando o resto do processo
-        print(f' {item.name} ')  # Se não for pasta, é arquivo, então mostra o nome
+        print(f'{item.name}')  # Se não for pasta, é arquivo, então mostra o nome
         if item.suffix not in sffx:
             sffx.append(item.suffix)
         # print(subpastas)
@@ -71,14 +66,18 @@ def criarPastas(lst):
 
     from os import makedirs
 
-    for suffix in lst:
-        try:
+    for suffix in lst:  # Para cada sufixo em lst (lst é uma lista que foi retornada para main.py)
+        try:  # Tenta isso aqui
             makedirs(suffix)
         except FileExistsError:
             print(f'Pasta {suffix} já foi criada!')
+            #  Mesmo se essa pasta existir manualmente, ela será detectada
         else:
             print(f'Criando pasta para arquivos {suffix}')
     print('Feito!')
+
+
+log = []  # Lista que serve como um arquivo log, que guarda todas as alterações feitas
 
 
 def moverArquivos(pathstr, lst):
@@ -93,6 +92,7 @@ def moverArquivos(pathstr, lst):
     from pathlib import Path
     
     subpastas = []
+    global log
     caminho = Path(pathstr)  # Transformando str em um objeto iterável
 
     for pasta in lst:  # Para cada pasta nas pastas que foram criadas (retorno de mostrarArquivos())
@@ -109,7 +109,9 @@ def moverArquivos(pathstr, lst):
             
             elif item.match(f'*{pasta}'):  # Se o sufixo do item for o mesmo que o nome da pasta (função match())
                 caminhoantigo = item  # Só pra explicitar
-                caminhonovo = f'C:\\Users\\teteu\\Downloads\\teste\\{pasta}\\{item.name}'
+                caminhonovo = f'{pathstr}\\{pasta}\\{item.name}' # pathstr guarda o local da Pasta Downloads
+                log.append(caminhoantigo)  # Append no log do programa para uso de backup
+                log.append(caminhonovo)  # Append no log do programa para uso de backup
                 move(caminhoantigo, caminhonovo)  # Função move() da biblioteca Shutil
                 print(f'Movendo < {item.name} > para < {pasta} > ')
 
@@ -130,72 +132,52 @@ def moverArquivos(pathstr, lst):
             moverArquivos(subpasta, sffx)  #  De novo aquela lógica maluca lá
         elif opcao[0] in 'N':  # Se a opção for NÃO
             continue  # Ignora a subpasta
+        
+    #  C:\\Users\home\\Downloads\\pasta sffx\\subpasta pasta\\arquivo.any
+    #  C:\\Users\\home\\Downloads\\{novo}\\{arquivo.any}
 
 
-def desfazer(pathstr, lst):
+def desfazer():
     """
     -> Função que desfaz qualquer alteração feita anteriormente.
-    -> É a função moverArquivos com apenas uma linha trocada
-    :param pathstr: Caminho da pasta Downloads em tipo str()
-    :param lst: Lista de pastas criadas (retorno de mostrarArquivos())
+    -> Utiliza da lista log que guardou todos os antigos diretórios dos arquivos
+    :return: Sem retorno
     """
 
     from shutil import move
-    from pathlib import Path
-    
-    subpastas = []
-    caminho = Path(pathstr)  # Transformando str em um objeto iterável
 
-    for pasta in lst:  # Para cada pasta nas pastas que foram criadas (retorno de mostrarArquivos())
-        for item in caminho.iterdir():  # Para cada item no caminho da pasta Downloads
-            if item.is_dir():  # Se o item é um diretório 
-                if item.name in lst:  # Se o diretório já está na lista de pastas criadas
-                    continue  # Ignora essa pasta
-                #  Isso deve ser feito porque a função iterdir() também analisará os itens de pastas, pois esses itens
-                #  São pastas que foram criadas na pasta Downloads
-                elif item not in subpastas:  # Se o diretório encontrado não está nas subpastas 
-                # Antes era item.name, mas dá conflito em str e objeto Path
-                # Note que o elif só acontece se o if de cima for False
-                    subpastas.append(item)  # Adiciona essa subpasta na lista subpastas
-            
-            elif item.match(f'*{pasta}'):  # Se o sufixo do item for o mesmo que o nome da pasta (função match())
-                caminhoantigo = item  # Só pra explicitar
-                caminhonovo = f'C:\\Users\\teteu\\Downloads\\teste\\{pasta}\\{item.name}'
-                move(caminhoantigo, caminhonovo)  # Função move() da biblioteca Shutil
-                print(f'Movendo < {item.name} > para < {pasta} > ')
-
-
-
-
-
-
-
-
-
-
-#  PAREI AQUI, PRECISO COMENTAR A FUNÇÃO ABAIXO E FAZER UMA QUE DESFAZ ALTERAÇÕES
-
-
-
+    global log  #  Variável global log
+    indicenovo = (len(log) - 1)  # O índice novo está no len(log) - 1
+    indiceantigo = (len(log) - 2)  # O índice antigo está no len(log) - 2
+    print('Desfazendo alterações...')
+    while indiceantigo >= 0:  # Enquanto indiceantigo não chegar no índice 0
+        indicenovo -= 2  # Subtrai 2
+        indiceantigo -= 2  # Subtrai dois
+        novo = log[indicenovo]  # O índice novo já está como str()
+        antigo = str(log[indiceantigo])  # O índice antigo estava como objeto da classe Path
+        move(novo, antigo)  # Move(novo, antigo)
 
 
 def removerVazios(pathstr):
+    """
+    -> Função que remove pastas vazias
+    :param pathstr: Diretório no tipo str()
+    :return: Sem retorno
+    """
+
     from pathlib import Path
     from os import rmdir
 
-    downloadpath = Path(pathstr)
+    downloadpath = Path(pathstr)  
     n = 0
-    for item in downloadpath.iterdir():
-        if item.is_dir():
+    for item in downloadpath.iterdir():  # Para cada item no objeto iterável 
+        if item.is_dir():  # Se o item é um diretório
             try:
                 rmdir(item)
-            except OSError:
-                continue
-            else:
-                n += 1
+                # A função os.rmdir() só apaga diretórios vazios
+            except OSError:  # Se o diretório não está vazio, dá a exceção OSError
+                continue  # Pula esse item
+            else:  # Se não der erros
+                n += 1  # Conta a pasta apagada
                 
     print(f'Removi {n} pasta(s) vazia(s)!')
-
-    #  C:\\Users\teteu\\Downloads\\pasta sffx\\subpasta pasta\\arquivo.any
-    #  C:\\Users\\teteu\\Downloads\\{novo}\\{arquivo.any}
-    # Usar .remove na pergunta das pastas a serem movidas
