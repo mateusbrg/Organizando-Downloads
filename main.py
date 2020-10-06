@@ -34,7 +34,7 @@ criarPastas(pastas)  # Função criarPastas recebe a lista
 print('')
 input(f'Aperte < enter > para continuar!')
 os.system('cls')
-'''
+
 print('Agora vamos organizar os arquivos!')
 sleep(2)
 
@@ -59,14 +59,14 @@ for c in range(5, 0, -1):
 os.startfile(pathstr)
 
 print(f'''
-'''
+
         Quer manter as alterações?
         Digite '{Fore.LIGHTGREEN_EX}S{Style.RESET_ALL}' para manter as alterações
         Digite '{Fore.LIGHTRED_EX}N{Style.RESET_ALL}' para desfazer alterações
         
         As pastas vazias são temporárias e serão apagadas
-        )'''
-'''
+        ''')
+
 print('')
 
 #  Bloco da opção do usuário
@@ -94,4 +94,3 @@ print('=' * 38)
 print('')
 input(' Aperte < enter > para fechar o programa... ')
 os.system('exit')
-'''

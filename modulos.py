@@ -43,7 +43,10 @@ def mostrarArquivos(caminho):
         # Se não for pasta, é arquivo, então mostra o nome
         # print('-> {item.name}')
         if item.suffix not in sffx:
-            sffx.append(item.suffix)
+            if item.suffix == '':  # Corrigindo problema de arquivos sem tipo específico
+                sffx.append('.NoType')
+            else:
+                sffx.append(item.suffix)
         # print(subpastas)
 
     for subpasta in subpastas:  # Para cada subpasta na lista subpastas
@@ -116,6 +119,18 @@ def moverArquivos(pathstr, lst):
                 # Note que o elif só acontece se o if de cima for False
                     subpastas.append(item)  # Adiciona essa subpasta na lista subpastas
             
+            elif item.suffix == '':  # Corrigindo problema de arquivos sem tipo específico
+                caminhoantigo = item  # Só pra explicitar
+                caminhonovo = f'{pathstr}\\.NoType\\{item.name}' # pathstr guarda o local da Pasta Downloads
+                log.append(caminhoantigo)  # Append no log do programa para uso de backup
+                log.append(caminhonovo)  # Append no log do programa para uso de backup
+                move(caminhoantigo, caminhonovo)  # Função move() da biblioteca Shutil
+                print(f'{Fore.LIGHTCYAN_EX}Movendo ' 
+                f'{Fore.LIGHTWHITE_EX}{item.name} ' 
+                f'{Fore.GREEN}para ' 
+                f'{Fore.LIGHTWHITE_EX}.NoType{Style.RESET_ALL}')
+                # print('Movendo {item.name} para {pasta}')
+
             elif item.match(f'*{pasta}'):  # Se o sufixo do item for o mesmo que o nome da pasta (função match())
                 caminhoantigo = item  # Só pra explicitar
                 caminhonovo = f'{pathstr}\\{pasta}\\{item.name}' # pathstr guarda o local da Pasta Downloads
