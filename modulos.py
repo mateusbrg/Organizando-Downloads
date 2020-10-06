@@ -32,7 +32,7 @@ def mostrarArquivos(caminho):
     subpastas = []  # Lista subpastas vazia
     global sffx  # Variável global de modulos.py
 
-    sleep(1.5)
+    sleep(0.5)
     traco(f'{Fore.BLACK}{Back.LIGHTCYAN_EX}-----> Analisando < {caminho} >{Style.RESET_ALL}') 
     for item in caminho.iterdir():  # Para cada item no caminho iterável
         if item.is_dir():  # Se o item for uma pasta

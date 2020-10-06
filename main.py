@@ -2,11 +2,11 @@ import os
 import pathlib
 from modulos import *
 from time import sleep
-from colorama import Fore, Style, Back
+from colorama import Fore, Style
 
 # Detectando pasta Downloads
 userpath = pathlib.Path.home()  # Detectando pasta do usuário /Users//
-pathstr = str(userpath) + '\\Downloads\\teste'  # Há uma forma melhor de fazer isso?
+pathstr = str(userpath) + '\\Downloads'  # Há uma forma melhor de fazer isso?
 #  Alterado pra //teste para não ter risco de griffar a pasta Downloads
 downloadpath = pathlib.Path(pathstr)  # Transformando a string em um objeto que aceita métodos
 # Talvez com joinpath
@@ -29,11 +29,12 @@ pastas = mostrarArquivos(pathstr)  #  Função mostrar arquivos
 #  mostrarArquivos() retorna uma lista com os sufixos encontrados dos arquivos analisados
 print()
 sleep(1)
+print(pastas)
 criarPastas(pastas)  # Função criarPastas recebe a lista 
 print('')
 input(f'Aperte < enter > para continuar!')
 os.system('cls')
-
+'''
 print('Agora vamos organizar os arquivos!')
 sleep(2)
 
@@ -58,12 +59,14 @@ for c in range(5, 0, -1):
 os.startfile(pathstr)
 
 print(f'''
+'''
         Quer manter as alterações?
         Digite '{Fore.LIGHTGREEN_EX}S{Style.RESET_ALL}' para manter as alterações
         Digite '{Fore.LIGHTRED_EX}N{Style.RESET_ALL}' para desfazer alterações
         
         As pastas vazias são temporárias e serão apagadas
-        ''')
+        )'''
+'''
 print('')
 
 #  Bloco da opção do usuário
@@ -91,3 +94,4 @@ print('=' * 38)
 print('')
 input(' Aperte < enter > para fechar o programa... ')
 os.system('exit')
+'''
