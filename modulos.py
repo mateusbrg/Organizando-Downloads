@@ -18,7 +18,8 @@ def traco(msg):
 # ===================================== Feito com base no Gist de @robsonpiere ==============================#
 # ================== https://gist.github.com/robsonpiere/fc256f6e7b7301d2d12343372cde93f9 ===================#
 sffx = []  # Lista que será usada para guardar as pastas criadas pela função abaixo
-
+numarq = 0  # Número de arquivos existentes
+numdir = 0  # Número de pastas existentes
 
 def mostrarArquivos(caminho):
     """
@@ -28,20 +29,20 @@ def mostrarArquivos(caminho):
     :return: Retorna a lista com os tipos de arquivos encontrados (sem repetições)
     """
 
-    from time import sleep
     # Caso queira ver o que está intrínseco na função, adicione os comandos comentados (coloque cores).
     caminho = Path(caminho)  # Caminho como objeto
     subpastas = []  # Lista subpastas vazia
     global sffx  # Variável global de modulos.py
+    global numarq
+    global numdir
 
-    sleep(0.5)
-    traco(f'{Fore.BLACK}{Back.LIGHTCYAN_EX}-----> Analisando < {caminho} >{Style.RESET_ALL}') 
     for item in caminho.iterdir():  # Para cada item no caminho iterável
         if item.is_dir():  # Se o item for uma pasta
+            numdir += 1
             subpastas.append(item)  # Adiciona na lista de subpastas
             continue  
             # Volta pro começo da iteração, ignorando o resto do processo
-        print(f'{Fore.YELLOW}-> {Fore.CYAN}{item.name}{Style.RESET_ALL}')  
+        numarq += 1
         # Se não for pasta, é arquivo, então mostra o nome
         # print('-> {item.name}')
         if item.suffix not in sffx:
@@ -60,7 +61,8 @@ def mostrarArquivos(caminho):
         # print(subpastas)
         # print(subpasta)
         mostrarArquivos(subpasta)        
-    return sffx
+    
+    return sffx, numarq, numdir
 # ===================================== Obrigado @robsonpiere! ===========================================#
 
     # Por algum motivo, o Python guarda a primeira ocorrência da lista subpastas, fazendo com que várias variáveis subpastas 

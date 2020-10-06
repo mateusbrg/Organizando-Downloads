@@ -25,17 +25,26 @@ print('Procurando pasta...')
 
 os.chdir(downloadpath)  #  Mudando diretório que o programa vai atuar
 
-pastas = mostrarArquivos(pathstr)  #  Função mostrar arquivos
+traco(f'{Fore.BLACK}{Back.LIGHTCYAN_EX}-----> Analisando sua pasta Downloads... {Style.RESET_ALL}') 
+tupla = mostrarArquivos(pathstr)  #  Função mostrar arquivos
+pastas = tupla[0]  # Pastas que foram criadas 
+numarquivos = tupla[1]  # Numero de arquivos encontrados
+numdiretorios = tupla[2]  # Numero de diretórios encontrados
+
+print(f'Foram encontrados {numarquivos} arquivos, {numdiretorios} pastas e {len(pastas)} tipos de arquivos!')
+print('')
+input('Aperte < enter > para continuar!')
 #  mostrarArquivos() retorna uma lista com os sufixos encontrados dos arquivos analisados
-print()
-sleep(1)
-print(pastas)
+
+traco('Agora vou criar pastas para cada tipo de arquivo encontrado')
+sleep(2)
+
 criarPastas(pastas)  # Função criarPastas recebe a lista 
 print('')
 input(f'Aperte < enter > para continuar!')
 os.system('cls')
 
-print('Agora vamos organizar os arquivos!')
+traco('Agora vamos organizar os arquivos!')
 sleep(2)
 
 moverArquivos(pathstr, pastas)  # Função moverArquivos
