@@ -1,5 +1,8 @@
 from colorama import Fore, Style, Back
+from pathlib import Path
 
+userpath = Path.home()  # Detectando pasta do usuário /Users//
+userpath = str(userpath) + '\\Downloads'  # Pasta do usuário em tipo str
 
 def traco(msg):
     """
@@ -25,7 +28,6 @@ def mostrarArquivos(caminho):
     :return: Retorna a lista com os tipos de arquivos encontrados (sem repetições)
     """
 
-    from pathlib import Path
     from time import sleep
     # Caso queira ver o que está intrínseco na função, adicione os comandos comentados (coloque cores).
     caminho = Path(caminho)  # Caminho como objeto
@@ -44,9 +46,14 @@ def mostrarArquivos(caminho):
         # print('-> {item.name}')
         if item.suffix not in sffx:
             if item.suffix == '':  # Corrigindo problema de arquivos sem tipo específico
-                sffx.append('.NoType')
-            else:
-                sffx.append(item.suffix)
+                if '.NoType' not in sffx:  # Se '.NoType' não está na lista
+                    sffx.append('.NoType') 
+                else:  # Senão
+                    continue  # Ignora o novo sufixo
+                # O sistema reconhecia que o sufixo '' de arquivos sem tipo específico não estava na lista de sufixos encontrados
+                # Afinal, o sufixo é '', e não '.NoType'
+            else:  # Se o sufixo não é == '':
+                sffx.append(item.suffix)  # Apende porque já passou pela passagem 'if item.suffix not in sffx:'
         # print(subpastas)
 
     for subpasta in subpastas:  # Para cada subpasta na lista subpastas
@@ -101,7 +108,6 @@ def moverArquivos(pathstr, lst):
     """
 
     from shutil import move
-    from pathlib import Path
     
     subpastas = []
     global log
@@ -121,7 +127,7 @@ def moverArquivos(pathstr, lst):
             
             elif item.suffix == '':  # Corrigindo problema de arquivos sem tipo específico
                 caminhoantigo = item  # Só pra explicitar
-                caminhonovo = f'{pathstr}\\.NoType\\{item.name}' # pathstr guarda o local da Pasta Downloads
+                caminhonovo = f'{userpath}\\.NoType\\{item.name}' # userpath guarda o local da Pasta Downloads
                 log.append(caminhoantigo)  # Append no log do programa para uso de backup
                 log.append(caminhonovo)  # Append no log do programa para uso de backup
                 move(caminhoantigo, caminhonovo)  # Função move() da biblioteca Shutil
@@ -129,11 +135,12 @@ def moverArquivos(pathstr, lst):
                 f'{Fore.LIGHTWHITE_EX}{item.name} ' 
                 f'{Fore.GREEN}para ' 
                 f'{Fore.LIGHTWHITE_EX}.NoType{Style.RESET_ALL}')
+                continue
                 # print('Movendo {item.name} para {pasta}')
 
             elif item.match(f'*{pasta}'):  # Se o sufixo do item for o mesmo que o nome da pasta (função match())
                 caminhoantigo = item  # Só pra explicitar
-                caminhonovo = f'{pathstr}\\{pasta}\\{item.name}' # pathstr guarda o local da Pasta Downloads
+                caminhonovo = f'{userpath}\\{pasta}\\{item.name}' # userpath guarda o local da Pasta Downloads
                 log.append(caminhoantigo)  # Append no log do programa para uso de backup
                 log.append(caminhonovo)  # Append no log do programa para uso de backup
                 move(caminhoantigo, caminhonovo)  # Função move() da biblioteca Shutil
@@ -193,7 +200,6 @@ def removerVazios(pathstr):
     :return: Sem retorno
     """
 
-    from pathlib import Path
     from os import rmdir
 
     downloadpath = Path(pathstr)  

@@ -9,7 +9,7 @@ Aquela bagunça encontrada me levou a pensar não só em como automatizar a orga
 ---
 ## Funcionamento
 
-Baseado nas bibliotecas `OS`, `pathlib` e `shutil` built-ins da linguagem, o projeto foi construído 100% em Python e foi excelente para treinar todos os conceitos vistos no Curso de Python 3 do Professor Guanabara.
+Baseado nas bibliotecas `OS`, `pathlib` e `shutil` built-ins da linguagem, o projeto foi construído 100% em Python e organiza os arquivos de acordo com o tipo deles (.exe, .pdf, etc). Foi excelente para treinar todos os conceitos vistos no Curso de Python 3 do Professor Guanabara.
 
 ## Instalação
 
@@ -32,6 +32,7 @@ Após a instalação da biblioteca, o programa pode ser executado através do ar
 * O programa NÃO roda em sistemas [UNIX](https://pt.wikipedia.org/wiki/Unix). Futuramente pretendo portabilizá-lo, mas fica em aberto para contribuições da comunidade.
 * O programa não funcionará se sua pasta de Downloads tiver um nome diferente do padrão do sistema.
 * Atualizações futuras nas bibliotecas `pathlib`, `shutil` e `os` podem inviabilizar a ferramenta, fazendo-se necessário uma atualização.
+* O programa pode bagunçar arquivos de jogos e outros programas não-instaláveis presentes na pasta Downloads. O mesmo pergunta se você quer "organizar" essas subpastas, então tome cuidado!
 
 ---
 ## Contribuições
@@ -51,6 +52,3 @@ Agradeço imensamente ao usuário [robsonpiere](https://github.com/robsonpiere) 
 
 ## Licença
 MIT License © 2020 [Mateus Braga](https://github.com/mateusbrg)
-
-
-
