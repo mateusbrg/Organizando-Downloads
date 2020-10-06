@@ -55,3 +55,5 @@ Agradeço imensamente ao usuário [robsonpiere](https://github.com/robsonpiere) 
 
 ## Licença
 MIT License © 2020 [Mateus Braga](https://github.com/mateusbrg)
+
+Feito com muito ❤️ por @mateusbrg
