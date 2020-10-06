@@ -32,7 +32,11 @@ pip install colorama
 Após a instalação da biblioteca, o programa pode ser executado através do arquivo **main.py**
 
 ## Execução
-![imagem mostrando a pasta antes de usar o programa]()
+
+### Antes
+![ANTES](https://raw.githubusercontent.com/mateusbrg/Organizando-Downloads/master/img/Antes.png)
+### Depois
+![DEPOIS](https://raw.githubusercontent.com/mateusbrg/Organizando-Downloads/master/img/Depois.png)
 
 ## Issues conhecidas
 
