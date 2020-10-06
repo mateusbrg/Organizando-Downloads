@@ -1,0 +1,236 @@
+Arquivo de anotações durante o projeto
+
+#  os.makedirs() Para criar diretórios
+#  os.scandir() provavelmente instancia alguma coisa com final pass
+#  d = os.stat(diretorio) retornou uma porrada de coisa, como tamanho, tempo de acesso, etc
+
+
+# arquivos = []
+with os.scandir(diretorio) as dir:
+    for arq in dir:
+        arquivos.append(arq)
+  Retornou uma lista com vários arquivos assim: <DirEntry 'Print 1 ex 2.png'>, <DirEntry 'Print 1.png'>
+
+# with os.scandir(dirantigo) as arquivos:  # Rodando Scandir e mostrando todos os arquivos
+    for arq in arquivos:
+        print(arq.name)
+
+
+# Aparentemente, o melhor a se fazer é utilizar a bilbioteca pathlib, já que torna o diretorio um objeto
+
+# lista = os.listdir(dirantigo)
+
+
+# os.getcwd() retorna um string. Precisamos de um objeto para manipular ele (alterar nome, estado, comportamento)
+https://pt.stackoverflow.com/questions/426706/renomear-arquivos-e-mover-para-fora-do-diret%c3%b3rio-python?rq=1
+
+
+# from tkinter import filedialog
+teste = filedialog.askdirectory()
+Pergunta pro usuário um diretório!!!
+
+# os.environ mostra um dicionário com coisas do sistema
+
+Atenção a Path().glob()
+
+Até agora, mover um arquivo ainda é um problema
+Em sistemas mais modernos, o mesmo método que faz o renomeio de arquivos, também move arquivos
+
+Podendo ser:
+shutil.move('diretorio/origem/nome-arquivo', 'diretorio/destino/novo-nome-arquivo')
+os.rename('diretorio/origem/nome-arquivo', 'diretorio/destino/novo-nome-arquivo')
+
+Vou dar um jeito de concatenar as strings
+
+
+-----------------------------------------------------------------------------------------------------
+Depois de conseguir fazer o projeto funcionar com sucesso, pensei em novas alterações
+
+Até esse ponto, o programa só pode ser rodado uma vez. Na segunda, ele retorna a exceção FileExistsError
+Depois de mover os diretórios, não consigo restaurar, ou seja, deixar como estava antes
+
+Ao pensar na versão 1.1, ou seja, a versão que estaria disponível a restauração dos arquivos, identifiquei
+problemas:
+- A maneira como a pasta é identificada é um problema. Ele guarda em uma lista que, se renomearmos a pasta,
+a lista não é atualizada e o programa quebra na movimentação desses arquivos
+-------------------------------------------------------------------------------------------------------------
+Atualização 1.1: Visualizando arquivos de subpastas
+
+for item in downloadpath.iterdir(): 
+        if item.is_file():  # Se o item analisado é um arquivo:
+            print(f'{item.name}')  #print {n} -> item.name
+        elif item.is_dir():
+            temp.append(item)
+
+    for caminho in temp:  # Para cada caminho in lista temporária
+        print(caminho)  # Mostra o caminho (teste)
+        caminho = Path(caminho)  # Transforma o caminho em um objeto iterável (classe)
+        for item in caminho.iterdir():  # Para cada item no caminho
+            if item.is_file():  # Printa se for um arquivo
+                print(f'{item.name}')
+            if item.is_dir():  # Se for diretório, guarda em temp
+                temp.append(item)
+        #  Teóricamente, ele vai guardar caminhos infinitamente até parar de ter pastas e chegar no final de temp
+
+O programa acima funcionou, mas tive problemas com o print. Quero printar assim:
+
+Pasta 1
+arquivos 
+arquivos
+    subpasta1
+    arquivos
+    arquivos
+        subpasta2
+        arquivos
+        arquivos
+pasta 2
+arquivos
+arquivos
+arquivos
+
+-----------------------------------------------------------------------------------------------------------------------
+def mostrarArquivos(p=''):
+    """
+    -> Mostra os ARQUIVOS (files) existentes no caminho Downloads anteriormente determinado
+    -> NÃO MOSTRA DIRETÓRIOS
+    :param p: Caminho da pasta Downloads em tipo str()
+    :return: Sem retorno
+    """
+
+    from pathlib import Path
+    temp = []
+
+
+    def mostrarSubpasta():  # Def dentro de outro, aceitando os imports
+
+        lista = []
+        lista.clear()
+
+        for caminho in temp:  # Para cada caminho in lista temporária
+            caminho = Path(caminho)  # Transforma o caminho em um objeto iterável (classe)
+            print(f'Analisando < {caminho.name} >')
+
+            for item in caminho.iterdir():  # Para cada item no caminho
+                if item.is_file():  # Printa se for um arquivo
+                    print(f'    -> {item.name}')
+                elif item.is_dir():  # Se for diretório, guarda em temp
+                    lista.append(item)
+        return lista
+
+    print('\033[1;36m' + ' ARQUIVOS ' + '\033[m')  #  Título da lista ARQUIVOS
+    downloadpath = Path(p)  #  Caminho agora como objeto
+    traco(f'Analisando <{downloadpath}>')
+    
+    for item in downloadpath.iterdir(): 
+        if item.is_file():  # Se o item analisado é um arquivo:
+            print(f'    -> {item.name}')  #print {n} -> item.name
+        elif item.is_dir():
+            temp.append(item)
+
+    temp = mostrarSubpasta()
+
+    while True:
+        if len(temp) == 0:
+            break
+        else:
+            temp = mostrarSubpasta()
+        
+        #  Não é possível usar o enumerate porque ele vai contar os diretórios e não printá-los, fazendo com que o índice fique com buracos
+        #  As vezes o intellisense buga no Pycharm e aqui
+        #  Variável .name
+
+
+A FUNÇÃO ACIMA PRINTA ASSIM:
+ 
+ Pasta 1
+    arquivos 
+    arquivos
+
+pasta 2
+    arquivos
+    arquivos
+    arquivos
+
+subpasta1
+    arquivos
+    arquivos
+subpasta2
+    arquivos
+    arquivos
+
+
+--------------------------------------------------------------------------------------------------
+def mostrarArquivos(caminho):
+
+    from pathlib import Path
+    # Caso queira ver o que está intrínseco na função, adicione os comandos comentados (coloque cores).
+
+    caminho = Path(caminho)  # Caminho como objeto
+    subpastas = []  # Lista subpastas vazia
+    print(f' Analisando < {caminho} > ') 
+    for item in caminho.iterdir():  # Para cada item no caminho iterável
+        if item.is_dir():  # Se o item for uma pasta
+            subpastas.append(item)  # Adiciona na lista de subpastas
+            continue  
+            # Volta pro começo da iteração, ignorando o resto do processo
+        print(f' {item.name} ')  # Se não for pasta, é arquivo, então mostra o nome
+        # print(subpastas)
+
+    for subpasta in subpastas:  # Para cada subpasta na lista subpastas
+        # print(subpastas)
+        # print(subpasta)
+        mostrarArquivos(subpasta)
+
+CONSEGUI! Com a ajuda de um Gist no Github, consegui fazer o que queria, embora ainda eu não tenha entendido a lógica disso
+----------------------------------------------------------------------------------------------------------
+Mudei as cores do padrão ANSI para a biblioteca colorama, gostei bastante e roda as cores no terminal do Windows
+
+Consertei a função criarPastas para reconhecer se o programa já roudou alguma vez no sistema através das pastas que já foram criadas
+
+Criei uma lista chamada log para guardar caminhos antigos temporariamente e conseguir desfazer alterações
+
+A função desfazer usa o log para mover os arquivos aos diretórios originais 
+
+from shutil import move
+
+    global log  #  Variável global log
+    indicenovo = (len(log) - 1)  # O índice novo está no len(log) - 1
+    indiceantigo = (len(log) - 2)  # O índice antigo está no len(log) - 2
+    print(f'{Fore.LIGHTCYAN_EX}Desfazendo alterações...{Style.RESET_ALL}')
+    while indiceantigo >= 0:  # Enquanto indiceantigo não chegar no índice 0
+        indicenovo -= 2  # Subtrai 2
+        indiceantigo -= 2  # Subtrai dois
+        novo = log[indicenovo]  # O índice novo já está como str()
+        antigo = str(log[indiceantigo])  # O índice antigo estava como objeto da classe Path
+        move(novo, antigo)  # Move(novo, antigo)
+
+A função os.rmdir() remove pastas vazias, é excelente para o que quero fazer na função removerVazios()
+
+Também foi necessário detectar arquivos sem tipo específico (tipo arquivo) na pasta Downloads, geralmente presente em pastas de programas e jogos
+
+
+Traceback (most recent call last):
+  File "e:/teteu/Documents/Programação/Repositórios/Organizador-de-Downloads/main.py", line 41, in <module>
+    moverArquivos(pathstr, pastas)  # Função moverArquivos
+  File "e:\teteu\Documents\Programação\Repositórios\Organizador-de-Downloads\modulos.py", line 162, in moverArquivos
+    moverArquivos(subpasta, sffx)  #  De novo aquela lógica maluca lá
+  File "e:\teteu\Documents\Programação\Repositórios\Organizador-de-Downloads\modulos.py", line 112, in moverArquivos
+    for item in caminho.iterdir():  # Para cada item no caminho da pasta Downloads
+  File "C:\Users\teteu\AppData\Local\Programs\Python\Python38\lib\pathlib.py", line 1121, in iterdir
+    for name in self._accessor.listdir(self):
+PermissionError: [WinError 32] O arquivo já está sendo usado por outro processo: 'C:\\Users\\teteu\\Downloads\\Exercício SM Prof Roger'
+
+Problema!
+
+Resolvido! As pastas '.NoType' eram adicionadas em sffx toda vez que encontrava um arquivo sem tipo específico. Foi necessário somente arrumar esse problema para não conflitar processos
+
+if item.suffix not in sffx:
+            if item.suffix == '':  # Corrigindo problema de arquivos sem tipo específico
+                if '.NoType' not in sffx:  # Se '.NoType' não está na lista
+                    sffx.append('.NoType') 
+                else:  # Senão
+                    continue  # Ignora o novo sufixo
+                # O sistema reconhecia que o sufixo '' de arquivos sem tipo específico não estava na lista de sufixos encontrados
+                # Afinal, o sufixo é '', e não '.NoType'
+            else:  # Se o sufixo não é == '':
+                sffx.append(item.suffix)  # Apende porque já passou pela passagem 'if item.suffix not in sffx:'
