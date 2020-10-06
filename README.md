@@ -13,14 +13,6 @@ Baseado nas bibliotecas `OS`, `pathlib` e `shutil` built-ins da linguagem, o pro
 
 ## Instalação
 
-Para você que só quer usar o programa, não é necessário nenhuma instalação! Basta baixar e executar a ferramenta.
-
-Baixe o instalador para Windows (.exe) [clicando aqui]
-
-### Para você desenvolvedor, siga os passos abaixo:
-
-
-
 Antes de qualquer coisa, você precisa ter o [Python](https://www.python.org/downloads/) instalado na máquina.
 
 Também será necessário instalar a biblioteca `colorama`, para que as cores no terminal funcionem. Instale com `pip` ou com outro gerenciador de pacotes PyPi:
